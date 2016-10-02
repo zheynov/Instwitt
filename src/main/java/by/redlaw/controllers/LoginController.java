@@ -52,6 +52,7 @@ public class LoginController {
                     if (session.getAttribute("userDTO") == null) { // if session doesnt contain userDTO object
                         session.setAttribute("userDTO", userDTO);
                         session.setAttribute("postService", postService);
+                        session.setAttribute("ownpage", 0); // 0 means page shows posts for all users
                         return "redirect:/postloginpage";
                     }
                     model.addAttribute("formNotification", "It's impossible to login. Try to exit first!");

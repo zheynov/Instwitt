@@ -23,15 +23,27 @@
 <spring:message code="exit.button" var="exitbuttonLabel"/>
 <spring:message code="logged.as" var="loggedasLabel"/>
 <spring:message code="profile.form" var="pfLabel"/>
+<spring:message code="own.posts" var="mypostslabel"/>
+<spring:message code="all.posts" var="allstslabel"/>
 
 
 <div align="right" class="postlogin-div">
     <ext:exitTag userDTO="${userDTO.login}" loggedAs="${loggedasLabel}">
-        <a href="/profile"> <b> ${pfLabel} </b> </a> <a href="/exit"><b> ${exitbuttonLabel}</b> </a>
+        <a href="/profile"> <b> ${pfLabel} </b> </a>
+        <c:if test="${ownpage == 0}">
+            <a href="/myposts"> <font color="#7fff00"> <b>${mypostslabel}</b> </font> </a>
+        </c:if>
+        <c:if test="${ownpage == 1}">
+            <a href="/allposts"> <font color="#7fff00"><b> ${allstslabel}</b> </font></a>
+        </c:if>
+        <a href="/exit"><b> ${exitbuttonLabel}</b> </a>
     </ext:exitTag>
 </div>
 
 <h1 align="center"> I N S T W I T T </h1>
+
+
+
 
 <div align="center" class="postlogin-div">
     <form:form action="/makepost" method="post" commandName="newPost" enctype="multipart/form-data">
@@ -50,31 +62,54 @@
 <br/><br/>
 
 <c:forEach items="${postService.getAllThePosts()}" var="post">
-    <div align="center" class="postlogin-div"><font color="white">
+
         <spring:message code="posted.by" var="postedbyLabel"/>
         <spring:message code="post.time" var="posttimeLabel"/>
-            <%--tag postImageTag shows image using Base64 encoding --%>
-        <a id="${post.postID}"></a>
 
-        <c:if test="${post.photo ne null}">
-            <img src="<pit:postImageTag imageByte="${post.photo}"/>" height="300">
+        <c:if test="${ownpage == 0}">
+
+            <div align="center" class="postlogin-div"><font color="white">
+                    <%--tag postImageTag shows image using Base64 encoding --%>
+                <a id="${post.postID}"></a>
+
+                <c:if test="${post.photo ne null}">
+                    <img src="<pit:postImageTag imageByte="${post.photo}"/>" height="300">
+                </c:if>
+
+                <p><b> ${post.text} </b>
+
+                <p>    ${postedbyLabel} <b>
+                       ${post.userID.login}</b>,
+                       ${posttimeLabel}:
+                <b>    ${post.postDate} </b></font>
+
+                    <c:if test="${post.userID.getLogin()==userDTO.login}">
+                        <spring:message code="edit.post" var="edityLabel"/>
+                        <a href="/post/${post.postID}"> ${edityLabel} </a>
+                        <spring:message code="delete.post" var="deleteLabel"/>
+                        <a href="/delete/${post.postID}"> ${deleteLabel} </a>
+                    </c:if>
+            </div>
         </c:if>
 
-        <p>
-        <b> ${post.text} </b>
-        <p>
-            ${postedbyLabel} <b>
-            ${post.userID.login}</b>,
-            ${posttimeLabel}: <b> ${post.postDate} </b> </font>
+        <c:if test="${ownpage == 1}">
 
-        <c:if test="${post.userID.getLogin()==userDTO.login}">
-            <spring:message code="edit.post" var="edityLabel"/>
-            <a href="/post/${post.postID}"> ${edityLabel} </a>
-            <spring:message code="delete.post" var="deleteLabel"/>
-            <a href="/delete/${post.postID}"> ${deleteLabel} </a>
-        </c:if>
+                <c:if test="${post.userID.getLogin()==userDTO.login}">
+                    <div  align="center" class="postlogin-div"><font color="white">
+                    <a id="${post.postID}"></a>
+                    <img src="<pit:postImageTag imageByte="${post.photo}"/>" height="300">
+                    <p><b> ${post.text} </b> </p>
+                    <p>    ${postedbyLabel} <b> ${post.userID.login} </b>, ${posttimeLabel}:
+                        <b>    ${post.postDate} </b></font>
+                    <spring:message code="edit.post" var="edityLabel"/>
+                        <a href="/post/${post.postID}"> ${edityLabel} </a>
+                            <spring:message code="delete.post" var="deleteLabel"/>
+                        <a href="/delete/${post.postID}"> ${deleteLabel} </a>
+                    </div>
+                </c:if>
+            </c:if>
 
-    </div>
+
 </c:forEach>
 
 

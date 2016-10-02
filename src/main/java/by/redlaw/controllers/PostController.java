@@ -99,7 +99,7 @@ public class PostController {
     public String postUpdate(Model model, @ModelAttribute("post") PostDTO postDTO) {
 
         postService.postEdit(postDTO);
-        return "redirect:/postloginpage#"+postDTO.getPostID();
+        return "redirect:/postloginpage#" + postDTO.getPostID();
     }
 
     /**
@@ -119,6 +119,20 @@ public class PostController {
     public String postDeletiont(Model model, @PathVariable(value = "id") Long id) {
         Post post = postService.getPostById(id);
         postService.deletePost(post);
+        return "redirect:/postloginpage";
+    }
+
+
+    @RequestMapping(value = "/myposts", method = RequestMethod.GET)
+    public String showOnlyMyPosts(HttpSession session) {
+        session.setAttribute("ownpage", 1);
+        return "redirect:/postloginpage";
+    }
+
+
+    @RequestMapping(value = "/allposts", method = RequestMethod.GET)
+    public String showAllThePosts(HttpSession session) {
+        session.setAttribute("ownpage", 0);
         return "redirect:/postloginpage";
     }
 }
